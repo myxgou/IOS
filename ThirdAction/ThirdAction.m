@@ -11,6 +11,7 @@
 
 #import "ThirdAction.h"
 #import "ShareEngine.h"
+#define NotifyHandle  [NSNotificationCenter defaultCenter]
 @implementation ThirdAction
 @synthesize thirdActionDelegate,loginFailNotifyName,loginOutNotifyName,loginSucessNotifyName,shareFailNotifyName,shareSucessNotifyName;
 +(ThirdAction*)instance{
@@ -21,36 +22,47 @@
     });
     return _self_once;
 }
-
--(void)registerActionsCollection{
-    NSNotificationCenter *NotifyHandle = [NSNotificationCenter defaultCenter];
 //        登录成功回调
-    if(self.loginSucessNotifyName)
-        [[ShareEngine sharedInstance] setShareEngineDidLogIn:^(PlatformType sign,NSDictionary *dictionary){
-            
-            [NotifyHandle postNotificationName:loginSucessNotifyName object:nil userInfo:@{@"sign":@(sign),@"data":dictionary}];
-        }];
-//      登录失败回调
-    if(self.loginFailNotifyName)
-        [[ShareEngine sharedInstance] setShareEngineLoginFail:^{
-            [NotifyHandle postNotificationName:loginFailNotifyName object:nil userInfo:nil];
-        }];
-//      退出登录回调
-    if(self.loginOutNotifyName)
-        [[ShareEngine sharedInstance] setShareEngineDidLogOut:^(PlatformType sign){
-            [NotifyHandle postNotificationName:loginOutNotifyName object:nil userInfo:nil];
-        }];
-//    分享成功
-    if(self.shareSucessNotifyName)
-        [[ShareEngine sharedInstance] setShareEngineSendSuccess:^{
-            [NotifyHandle postNotificationName:shareSucessNotifyName object:nil userInfo:nil];
-        }];
-//        分享失败
-    if(self.shareFailNotifyName)
-        [[ShareEngine sharedInstance] setShareEngineSendFail:^{
-           [NotifyHandle postNotificationName:shareFailNotifyName object:nil userInfo:nil];
-        }];
+-(void)setLoginSucessNotifyName:(NSString *)loginSucessNotifyName_{
+    if([loginSucessNotifyName isEqualToString:loginSucessNotifyName_])return;
+    loginSucessNotifyName = loginSucessNotifyName_;
+    [[ShareEngine sharedInstance] setShareEngineDidLogIn:^(PlatformType sign,NSDictionary *dictionary){
+        [NotifyHandle postNotificationName:loginSucessNotifyName object:nil userInfo:@{@"sign":@(sign),@"data":dictionary}];
+    }];
 }
+//      登录失败回调
+-(void)setLoginFailNotifyName:(NSString *)loginFailNotifyName_{
+    if([loginFailNotifyName isEqualToString:loginFailNotifyName_])return;
+    loginFailNotifyName = loginFailNotifyName_;
+    [[ShareEngine sharedInstance] setShareEngineLoginFail:^{
+        [NotifyHandle postNotificationName:loginFailNotifyName object:nil userInfo:nil];
+    }];
+}
+//      退出登录回调
+-(void)setLoginOutNotifyName:(NSString *)loginOutNotifyName_{
+    if([loginOutNotifyName isEqualToString:loginOutNotifyName_])return;
+    loginOutNotifyName = loginOutNotifyName_;
+    [[ShareEngine sharedInstance] setShareEngineDidLogOut:^(PlatformType sign){
+        [NotifyHandle postNotificationName:loginOutNotifyName object:nil userInfo:nil];
+    }];
+}
+//        分享失败
+-(void)setShareFailNotifyName:(NSString *)shareFailNotifyName_{
+    if([shareFailNotifyName isEqualToString:shareFailNotifyName_])return;
+    shareFailNotifyName = shareFailNotifyName_;
+    [[ShareEngine sharedInstance] setShareEngineSendFail:^{
+        [NotifyHandle postNotificationName:shareFailNotifyName object:nil userInfo:nil];
+    }];
+}
+//    分享成功
+-(void)setShareSucessNotifyName:(NSString *)shareSucessNotifyName_{
+    if([shareSucessNotifyName isEqualToString:shareSucessNotifyName_])return;
+    shareSucessNotifyName = shareSucessNotifyName_;
+    [[ShareEngine sharedInstance] setShareEngineSendSuccess:^{
+        [NotifyHandle postNotificationName:shareSucessNotifyName object:nil userInfo:nil];
+    }];
+}
+
 -(void)rdyRegisterAllFlatform{
     [self registerQQClient];
     [self registerSinaWeiboClient];

@@ -86,8 +86,7 @@ typedef enum
                                                                 *shareSucessNotifyName,/*分享成功的通知*/
                                                                 *shareFailNotifyName;/*分享失败的通知*/
 +(ThirdAction*)instance;
-//实现注册通知集合
--(void)registerActionsCollection;
+
 //第三方登录
 -(void)thirdLoginBySign:(PlatformType)sign;
 //分享文本
