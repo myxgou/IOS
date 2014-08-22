@@ -8,24 +8,35 @@
 
 
 /*
-                                    🐶                                        🐶
-                                        🐶                                  🐶
-                                            🐶                            🐶
-                                                🐶                      🐶
-                                                    🐶                🐶
- 🐶🐶🐶🐶🐶🐶🐶🐶🐶🐶🐶🐶🐶🐶🐶🐶🐶🐶🐶🐶🐶🐶🐶🐶🐶🐶🐶🐶🐶🐶
- 🐶                                         用户须知                                                                       🐶
- 🐶  在targets上找到对应的项目，选择info，然后在url types上添加如下                  🐶
- 🐶   1.腾讯微博：wbKey;                                                                                          🐶
- 🐶   2.新浪微博：sinaweibosso.Key;                                                                        🐶
- 🐶   3.微信分享：wxKey;                                                                                          🐶
- 🐶   4.qq登录：tencentKey;                                                                                      🐶
- 🐶   Btw:需要在您的项目里引入第三方静态库:                                                         🐶
- 🐶   1>微信的libWeChatSDK.a,                                                                                🐶
- 🐶   2>腾讯微博libTcWeiboSDK.a，                                                                         🐶
- 🐶   3>qq的TencentOpenAPI.framework+TencentOpenApi_IOS_Bundle.bundle,   🐶
- 🐶   4>新浪微博的WeiboSDK.bundle                                                                       🐶
- 🐶🐶🐶🐶🐶🐶🐶🐶🐶🐶🐶🐶🐶🐶🐶🐶🐶🐶🐶🐶🐶🐶🐶🐶🐶🐶🐶🐶🐶🐶
+                                                                🐶                                        🐶
+                                                                    🐶                                  🐶
+                                                                        🐶                            🐶
+                                                                            🐶                     🐶
+                                                                                🐶              🐶
+🐶🐶🐶🐶🐶🐶🐶🐶🐶🐶🐶🐶🐶🐶🐶🐶🐶🐶🐶🐶🐶🐶🐶🐶🐶🐶🐶🐶🐶🐶🐶🐶🐶🐶🐶🐶🐶🐶🐶🐶🐶
+🐶                                         用户须知                                                                                                                        🐶
+🐶  在targets上找到对应的项目，选择info，然后在url types上添加如下                                                                    🐶
+🐶   1.腾讯微博：wbKey;                                                                                                                                            🐶
+🐶   2.新浪微博：sinaweibosso.Key;                                                                                                                          🐶
+🐶   3.微信分享：wxKey;                                                                                                                                            🐶
+🐶   4.qq登录：tencentKey;                                                                                                                                        🐶
+🐶   Btw:需要在您的项目里引入第三方静态库:                                                                                                           🐶
+🐶   1>微信的libWeChatSDK.a,                                                                                                                                  🐶
+🐶   2>腾讯微博libTcWeiboSDK.a，                                                                                                                           🐶
+🐶   3>qq的TencentOpenAPI.framework+TencentOpenApi_IOS_Bundle.bundle,                                                     🐶
+🐶   4>新浪微博的WeiboSDK.bundle                                                                                                                         🐶
+🐶      初始化：                                                                                                                                                           🐶
+🐶        先绑定委托，然后把各平台需要的信息注入，如果不写注入平台的各委托就不能注册对应的第三方平台      🐶
+🐶        [[ThirdAction instance] setThirdActionDelegate:self];                                                                                     🐶
+🐶       调用它执行注入操作                                                                                                                                        🐶
+🐶    [[ThirdAction instance] rdyRegisterAllFlatform];                                                                                                 🐶
+🐶 //        注册通知名                                                                                                                                                  🐶
+🐶 [[ThirdAction instance] setLoginSucessNotifyName:ThirdActionLoginSucessNotifyName];                                 🐶
+🐶[[ThirdAction instance] setLoginFailNotifyName:ThirdActionLoginFailNotifyName];                                              🐶
+🐶 [[ThirdAction instance] setLoginOutNotifyName:ThirdActionLogoutNofityName];                                                 🐶
+🐶 [[ThirdAction instance] setShareFailNotifyName:ThirdActionShareFailNotifyName];                                            🐶
+🐶 [[ThirdAction instance] setShareSucessNotifyName:ThirdActonShareSucessNofifyName];                                 🐶
+🐶🐶🐶🐶🐶🐶🐶🐶🐶🐶🐶🐶🐶🐶🐶🐶🐶🐶🐶🐶🐶🐶🐶🐶🐶🐶🐶🐶🐶🐶🐶🐶🐶🐶🐶🐶🐶🐶🐶🐶🐶
 
  
  */
