@@ -223,10 +223,18 @@ static ShareEngine *sharedSingleton_ = nil;
                                       kOPEN_PERMISSION_GET_REPOST_LIST] inSafari:YES];
         }else{
            
-            return [self showAlertView:[[UIAlertView alloc] initWithTitle:@"系统提示" message:@"您的手机QQ，暂不支持SSO登录,确定安装最新的吗？" delegate:self cancelButtonTitle:@"暂不" otherButtonTitles:@"确定", nil]];
+            return [self showAlertView:^{
+                UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"系统提示" message:@"您的手机QQ，暂不支持SSO登录,确定安装最新的吗？" delegate:self cancelButtonTitle:@"暂不" otherButtonTitles:@"确定", nil];
+                alertView.tag = QQClientTag;
+                return alertView;
+            }()];
         }
     }else{
-        return [self showAlertView:[[UIAlertView alloc] initWithTitle:@"系统提示" message:@"您尚未安装手机QQ,确定安装吗？" delegate:self cancelButtonTitle:@"暂不" otherButtonTitles:@"确定", nil]];
+        return [self showAlertView:^{
+            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"系统提示" message:@"您尚未安装手机QQ,确定安装吗？" delegate:self cancelButtonTitle:@"暂不" otherButtonTitles:@"确定", nil];
+            alertView.tag = QQClientTag;
+            return alertView;
+        }()];
     }
     return;
 }
@@ -247,7 +255,6 @@ static ShareEngine *sharedSingleton_ = nil;
     else{
         if(shareEngineLoginFail)
             shareEngineLoginFail();
-        return [self showAlertView:[[UIAlertView alloc] initWithTitle:@"系统提示" message:response.errorMsg delegate:self cancelButtonTitle:@"暂不" otherButtonTitles:@"确定", nil]];
     }
 }
 
@@ -277,7 +284,7 @@ static ShareEngine *sharedSingleton_ = nil;
 
 -(void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex{
     if(buttonIndex != alertView.cancelButtonIndex)
-        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:[QQApi getQQInstallURL]]];
+        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:alertView.tag == QQClientTag ? [QQApi getQQInstallURL] : [WXApi getWXAppInstallUrl]]];
     if(shareEngineLoginFail)
         shareEngineLoginFail();
 }
@@ -430,15 +437,34 @@ static ShareEngine *sharedSingleton_ = nil;
 
 /*🌹🌹🌹🌹🌹🌹🌹🌹🌹🌹🌹🌹🌹🌹🌹🌹🌹🌹🌹🌹🌹🌹🌹🌹🌹🌹*/
 #pragma mark - wechat delegate
+
+
+-(BOOL)checkIsInstallWechat{
+    if([WXApi isWXAppInstalled])return YES;
+    [self showAlertView:^{
+        UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"系统提示" message:@"你尚未安装微信客户端,确定安装吗？" delegate:self cancelButtonTitle:@"暂不" otherButtonTitles:@"确定", nil];
+        alertView.tag = WeChatClientTag;
+        return alertView;
+    }()];
+    return NO;
+}
+
+
 //send text 2 firend
 - (void)sendWeChatPostMessage:(NSString*)message{
+    if([self checkIsInstallWechat])
     [self weChatSendMessage:message andScene:WXSceneSession];
 }
+
+
+
 //send text 2 firend circle
 - (void)sendWeChatFriendPostMessage:(NSString*)message{
+    if([self checkIsInstallWechat])
     [self weChatSendMessage:message andScene:WXSceneTimeline];
 }
 -(void)weChatSendMessage:(NSString *)message andScene:(int)scene{
+    if(![self checkIsInstallWechat])return;
     SendMessageToWXReq* req = [[SendMessageToWXReq alloc] init];
     req.bText = YES;
     req.text = message;
@@ -447,7 +473,7 @@ static ShareEngine *sharedSingleton_ = nil;
 }
 - (void)sendWeChatContentTitle:(NSString *)title WithMessage:(NSString*)appMessage WithUrl:(NSString*)appUrl image:(UIImage *)image WithScene:(int)scene{
     // 发送内容给微信
-    
+    if(![self checkIsInstallWechat])return;
     
     NSString *sendTitle = scene == WXSceneSession ? title : appMessage;
     WXMediaMessage *message = [WXMediaMessage message];
@@ -472,16 +498,7 @@ static ShareEngine *sharedSingleton_ = nil;
     bSent ? [self weiboSendSuccess] : [self weiboSendFail:nil];
 }
 
--(void) onSentMediaMessage:(BOOL) bSent
-{
-    // 通过微信发送消息后， 返回本App
-    NSString *strTitle = [NSString stringWithFormat:@"发送结果"];
-    NSString *strMsg = [NSString stringWithFormat:@"发送媒体消息结果:%u", bSent];
-    
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:strTitle message:strMsg delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
-    [alert show];
-    
-}
+
 
 //微信反馈
 -(void) onResp:(BaseResp*)resp

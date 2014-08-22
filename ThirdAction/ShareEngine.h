@@ -7,7 +7,10 @@
 //
 
 
-
+typedef enum{
+    QQClientTag,
+    WeChatClientTag
+} UnInstallApp;
 
 #import <Foundation/Foundation.h>
 #import "WXApi.h"
